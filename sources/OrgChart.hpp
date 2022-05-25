@@ -3,14 +3,14 @@
 #include <vector>
 #include <list>
 
-#define LEVEL_ORDER 0
-#define REVERSE_LEVEL_ORDER 1
-#define PRE_ORDER 2
-
 using namespace std;
 
 
 namespace ariel {
+
+    const int level_order = 0;
+    const int reverse_level_order = 1;
+    const int preorder = 2;
     
     class OrgChart {
         private:
@@ -26,11 +26,23 @@ namespace ariel {
                     Node *_next;
                     Node(string str) 
                         :_val(std::move(str)), _next(nullptr) {}
+
+                    Node(const Node& other) {
+                        this->_val = other._val;
+                        this->_sub = other._sub;
+                        this->_next = other._next;
+                    }
+
+                    Node( Node&& other) = default;
+
                     ~Node() {
                         for(Node* n : _sub) {
                             delete  n;
                         }
                     }
+
+                    Node& operator=(const Node& other) = default;
+                    Node& operator=(Node&& ) = default;
             };
 
             struct Node *_root;
@@ -40,8 +52,15 @@ namespace ariel {
             // constructor
             OrgChart();
 
+            // copy constructor
+            OrgChart(const OrgChart& other);
+            OrgChart(OrgChart&& other) = default;
+
             // destructor
             ~OrgChart();
+
+            OrgChart& operator=(const OrgChart& other);
+            OrgChart& operator=(OrgChart&& other) = default;
 
             /**
              * @brief This function search a name in the tree
@@ -150,7 +169,7 @@ namespace ariel {
                 if(this->_root == nullptr) {
                     throw runtime_error("There is no root");
                 }
-                setNext(LEVEL_ORDER);
+                setNext(level_order);
                 return iterator{this->_root};
             }
             iterator end() {
@@ -164,7 +183,7 @@ namespace ariel {
                 if(this->_root == nullptr) {
                     throw runtime_error("There is no root");
                 }
-                setNext(LEVEL_ORDER);
+                setNext(level_order);
                 return iterator{this->_root};
             }
             iterator end_level_order() {
@@ -181,7 +200,7 @@ namespace ariel {
                 if(this->_root == nullptr) {
                     throw runtime_error("There is no root");
                 }
-                return iterator{setNext(REVERSE_LEVEL_ORDER)};
+                return iterator{setNext(reverse_level_order)};
             }
             iterator reverse_order() {
                 if(this->_root == nullptr) {
@@ -197,7 +216,7 @@ namespace ariel {
                 if(this->_root == nullptr) {
                     throw runtime_error("There is no root");
                 }
-                setNext(PRE_ORDER);
+                setNext(preorder);
                 return iterator{this->_root};
             }
             iterator end_preorder() {

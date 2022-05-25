@@ -5,9 +5,20 @@ namespace ariel {
     OrgChart::OrgChart() {
         this->_root = nullptr;
     }
+
+    OrgChart::OrgChart(const OrgChart& other) {
+        this->_root = other._root;
+    }
     
     OrgChart::~OrgChart() {
         delete this->_root;
+    }
+
+    OrgChart& OrgChart::operator=(const OrgChart& other) {
+        if(this == &other) {
+            return *this;
+        }
+        return *this;
     }
 
     OrgChart::Node* OrgChart::find(string &sup) {
@@ -44,19 +55,19 @@ namespace ariel {
         while(!list.empty()) {
             temp = list.back();
             list.pop_back();
-            if(type == LEVEL_ORDER) {
+            if(type == level_order) {
                 for(size_t i = 0; i < temp->_sub.size(); i++) {
                     list.push_front(temp->_sub[i]);
                 }
                 temp->_next = list.back();
-            } else if(type == REVERSE_LEVEL_ORDER) {
+            } else if(type == reverse_level_order) {
                 for(int i = (size_t)(temp->_sub.size() - 1); i >= 0 ; i--) {
                     list.push_front(temp->_sub.at((size_t)i));
                 }
                 if(!list.empty()) {
                     list.back()->_next = temp;
                 }
-            } else if(type == PRE_ORDER) {
+            } else if(type == preorder) {
                 for(int i = (size_t)(temp->_sub.size() - 1); i >= 0; i--) {
                     list.push_back(temp->_sub.at((size_t)i));
                 }
@@ -68,7 +79,7 @@ namespace ariel {
 
     int OrgChart::printOrg(const OrgChart::Node *node, string level) { 
         cout << level << "> " << node->_val << endl;
-        level += (node->_sub.empty()) ? "    " : "|     ";
+        level += (node->_sub.empty()) ? "    " : "      ";
 
         for(size_t i = 0; i < node->_sub.size(); i++) {
             
